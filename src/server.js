@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join } from 'path';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
+import formbody from '@fastify/formbody';
 import postgres from 'postgres';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -44,14 +45,13 @@ export async function buildApp(opts = {}) {
   // GOTCHA (baked-in lesson): decorateReply MUST be true so reply.sendFile works.
   await app.register(fastifyStatic, {
     root: join(__dirname, '..', 'public'),
-    prefix: '/',
+    prefix: '/static',
     decorateReply: true,
   });
 
-  await registerRoutes(app);
+  await app.register(formbody);
 
-  // Home page (reply.sendFile works because decorateReply:true).
-  app.get('/', async (req, reply) => reply.sendFile('index.html'));
+  await registerRoutes(app);
 
   return app;
 }
@@ -88,7 +88,10 @@ async function main() {
   console.log(`quickpoll listening on ${host}:${port}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+// Only run when executed directly (not imported by tests or other modules)
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
