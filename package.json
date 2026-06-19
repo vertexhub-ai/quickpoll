@@ -1,0 +1,20 @@
+{
+  "name": "quickpoll",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/static": "^7.0.0",
+    "dotenv": "^16.4.0",
+    "fastify": "^4.28.0",
+    "postgres": "^3.4.0"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0"
+  }
+}

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: quickpoll
+  namespace: quickpoll
+spec:
+  selector:
+    app: quickpoll            # GOTCHA: matches Deployment pod label exactly
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000

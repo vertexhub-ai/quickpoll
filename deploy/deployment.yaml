@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quickpoll
+  namespace: quickpoll
+  labels:
+    app: quickpoll
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quickpoll
+  template:
+    metadata:
+      labels:
+        app: quickpoll          # GOTCHA: Service selector MUST match this exactly, or endpoints stay empty (503)
+    spec:
+      containers:
+        - name: quickpoll
+          image: localhost:30500/quickpoll/api:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: quickpoll-secrets
+                  key: database-url
+          livenessProbe:
+            httpGet:
+              path: /api/health   # GOTCHA: must match the app's real health route
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests: { cpu: "50m", memory: "128Mi" }
+            limits: { cpu: "500m", memory: "512Mi" }

@@ -1,0 +1,7 @@
+-- Initial schema. Agents add tables here. Always use IF NOT EXISTS so
+-- migrate-on-boot stays idempotent.
+-- Example:
+-- CREATE TABLE IF NOT EXISTS items (
+--   id SERIAL PRIMARY KEY,
+--   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+-- );
