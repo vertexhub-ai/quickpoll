@@ -1,7 +1,19 @@
--- Initial schema. Agents add tables here. Always use IF NOT EXISTS so
--- migrate-on-boot stays idempotent.
--- Example:
--- CREATE TABLE IF NOT EXISTS items (
---   id SERIAL PRIMARY KEY,
---   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
--- );
+CREATE TABLE IF NOT EXISTS polls (
+  id SERIAL PRIMARY KEY,
+  question TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS poll_options (
+  id SERIAL PRIMARY KEY,
+  poll_id INTEGER NOT NULL REFERENCES polls(id) ON DELETE CASCADE,
+  label TEXT NOT NULL,
+  position INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS votes (
+  id SERIAL PRIMARY KEY,
+  poll_id INTEGER NOT NULL REFERENCES polls(id) ON DELETE CASCADE,
+  option_id INTEGER NOT NULL REFERENCES poll_options(id) ON DELETE CASCADE,
+  voted_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
