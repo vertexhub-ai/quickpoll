@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: quickpoll
-          image: localhost:30500/quickpoll/api:v1
+          image: localhost:30500/quickpoll/api:e55c67b
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
